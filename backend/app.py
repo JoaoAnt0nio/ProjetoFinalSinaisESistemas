@@ -6,7 +6,7 @@ import numpy as np
 import scipy.signal as signal
 
 app = Flask(__name__)
-CORS(app) # Habilita comunicação entre o frontend e o backend local
+CORS(app) 
 
 # Diretório onde a base de dados foi descompactada
 DB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'mit-bih-arrhythmia-database-1.0.0')
@@ -53,7 +53,6 @@ def pan_tompkins_detector(ecg_signal, fs):
     for p in peaks:
         start = max(0, p - search_window)
         end = min(len(ecg_signal), p + search_window)
-        # O pico R geralmente é o máximo absoluto naquela janela (pode ser invertido, mas vamos assumir positivo para MLII)
         local_max = start + np.argmax(ecg_signal[start:end])
         adjusted_peaks.append(int(local_max))
         
@@ -70,12 +69,12 @@ def process_record():
         return jsonify({"error": "Registro não encontrado"}), 404
         
     try:
-        # Lê o registro (apenas o tempo selecionado para não sobrecarregar)
-        # A base do MIT tem fs=360Hz. Entao duration * 360 frames.
+        # Lê o registro 
+        # A base do MIT tem fs=360Hz, por isso duration * 360 frames
         record = wfdb.rdrecord(record_path, sampto=duration_sec * 360)
         annotation = wfdb.rdann(record_path, 'atr', sampto=duration_sec * 360)
         
-        # Pega o primeiro canal (geralmente MLII)
+        # Pega o primeiro canal 
         ecg_raw = record.p_signal[:, 0]
         fs = record.fs
         
@@ -88,7 +87,7 @@ def process_record():
         # Detecção Algoritmica (Pan-Tompkins)
         detected_peaks = pan_tompkins_detector(ecg_raw, fs)
         
-        # Anotações Originais (True Labels do Cardiologista)
+        # Anotações Originais dos Cardiologistas
         true_peaks = [int(s) for s in annotation.sample if annotation.symbol[annotation.sample.tolist().index(s)] in ['N', 'L', 'R', 'B', 'A', 'a', 'J', 'S', 'V', 'r', 'F', 'e', 'j', 'n', 'E', '/', 'f', 'Q', '?']]
         
         # Cálculo de BPM médio (usando picos detectados)
@@ -98,9 +97,9 @@ def process_record():
         else:
             bpm = 0.0
             
-        # Comparação Percentual (Acurácia)
+        # Comparação Percentual 
         matched = 0
-        tolerance = int(0.1 * fs) # Tolerância de 100ms para considerar o pico válido
+        tolerance = int(0.1 * fs) # Tolerância de 100ms 
         for tp in true_peaks:
             for dp in detected_peaks:
                 if abs(tp - dp) <= tolerance:
