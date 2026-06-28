@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Análise de ECG</title>
+    <!-- Fontes modernas -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar clinical-panel">
+            <h1 class="logo">Sistema Clínica</h1>
+            <p class="subtitle">MIT-BIH Arrhythmia</p>
+
+            <div class="control-group">
+                <label for="record-select">Selecione o Registro:</label>
+                <select id="record-select">
+                    <option value="">Carregando...</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="duration-slider">Duração da Análise (segundos): <span id="duration-val">10</span>s</label>
+                <input type="range" id="duration-slider" min="5" max="30" value="10" step="1">
+            </div>
+
+            <button id="process-btn" class="primary-btn">Processar Sinal</button>
+
+            <div class="info-card">
+                <h3>BPM Médio Calculado</h3>
+                <div class="bpm-value" id="bpm-display">--</div>
+                <p id="bpm-status" class="bpm-status"></p>
+            </div>
+
+            <div class="info-card">
+                <h3>Acurácia do Algoritmo</h3>
+                <div class="bpm-value" id="accuracy-display">--%</div>
+                <p class="bpm-status">vs. Anotações Médicas</p>
+            </div>
+            
+            <div class="loading-spinner" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Processando...</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header clinical-panel">
+                <h2>Visualização de Sinais Clínicos</h2>
+                <p>Módulo de filtragem digital e extração automática de QRS.</p>
+            </header>
+
+            <div class="charts-container">
+                <div class="chart-wrapper clinical-panel">
+                    <div id="chart-raw" class="chart"></div>
+                </div>
+                <div class="chart-wrapper clinical-panel">
+                    <div id="chart-filtered" class="chart"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
