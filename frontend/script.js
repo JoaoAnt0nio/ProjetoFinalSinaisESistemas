@@ -10,12 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const bpmStatus = document.getElementById('bpm-status');
     const accuracyDisplay = document.getElementById('accuracy-display');
 
-    // Update slider value text
     durationSlider.addEventListener('input', (e) => {
         durationVal.textContent = e.target.value;
     });
 
-    // Fetch available records on load
     fetch(`${API_BASE}/records`)
         .then(res => res.json())
         .then(data => {
@@ -27,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     option.textContent = `Registro ${rec}`;
                     recordSelect.appendChild(option);
                 });
-                // Carregar o primeiro automaticamente
                 processSignal();
             } else {
                 recordSelect.innerHTML = '<option value="">Nenhum registro encontrado</option>';
@@ -69,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateDashboard(data) {
-        // Update BPM
         bpmDisplay.textContent = data.bpm;
         if (data.bpm < 60) {
             bpmStatus.textContent = "Bradicardia (Baixo)";
@@ -96,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
             legend: { orientation: "h", y: 1.1 }
         };
 
-        // --- Plot Raw Signal ---
         const rawTrace = {
             x: data.time,
             y: data.raw,
@@ -112,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, {responsive: true, scrollZoom: true});
 
 
-        // --- Plot Filtered Signal with Peaks ---
         const filteredTrace = {
             x: data.time,
             y: data.filtered,
@@ -134,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             marker: { color: '#10b981', size: 8, symbol: 'cross' }
         };
 
-        // Anotações Originais (Ground Truth)
+        // Anotações Originais 
         const trueTime = data.true_peaks_idx.map(i => data.time[i]);
         const trueAmp = data.true_peaks_idx.map(i => data.filtered[i]);
         const trueTrace = {
