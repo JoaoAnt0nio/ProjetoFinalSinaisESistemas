@@ -23,12 +23,4 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# Bases de dados (Arquivos pesados)
-mit-bih-arrhythmia-database-*/
-*.dat
-*.hea
-*.atr
-
-# Outros
-*.pdf
 .DS_Store
